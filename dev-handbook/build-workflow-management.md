@@ -47,4 +47,10 @@ The workflow management system is implemented in Github Workflow, in `.github/wo
 
 ![](build-steps.png)
 
-The ERB templates are run by `./internal-scripts/generate-ci-cd.rb`. It is recommended that you [setup a Git hook](dev-environment-setup.md), which runs that script automatically before every commit, so that the Github workflow file gets properly updated whenever you either modify the ERB template, or config.yml.
+The ERB templates are run by `./internal-scripts/generate-ci-cd-yaml.rb`. It is recommended that you [setup a Git hook](dev-environment-setup.md), which runs that script automatically before every commit, so that the Github workflow file gets properly updated whenever you either modify the ERB template, or config.yml.
+
+The `CI/CD: prepare` workflow runs `internal-scripts/ci-cd/check-version-numbers-need-changing/check-package-versions.rb` to reject package version downgrades and require version bumps when upstream sources change. For Ruby packages, the package-manager version is the revision; common and Rbenv packages have a separate upstream version and revision. The check compares `config.yml` against both the default branch and the latest release; a default-branch push uses its pre-push state instead of comparing against itself. The same command checks build-script changes against the release and requests manual approval when packages have not been bumped. A failure prevents the pipeline from advancing to the Ruby package builds.
+
+The policy and package-manager ordering code live in `lib/package_version_check.rb` and `lib/package_version_order.rb`. Their Minitest specs live in `test/`; run both suites with `ruby test/run.rb`, or run a single suite with `ruby test/package_version_check_test.rb` or `ruby test/package_version_order_test.rb`. To check locally against a particular baseline, pass its Git ref to `check-package-versions.rb`.
+
+After changing version ordering, run `ruby test/check_version_order_references.rb` to compare it against host `dpkg` and RPM's published comparison cases. This optional check requires `dpkg` and network access; the regular unit tests do not.

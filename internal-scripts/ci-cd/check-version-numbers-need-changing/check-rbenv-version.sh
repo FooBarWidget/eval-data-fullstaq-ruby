@@ -2,6 +2,7 @@
 # Checks whether the Rbenv version specified in
 # config.yml matches the actual Rbenv version.
 set -e
+set -o pipefail
 
 EXPECTED_RBENV_VERSION=$(./rbenv/bin/rbenv --version | awk '{ print $2 }' | sed -E 's/(.+)-.*/\1/')
 ACTUAL_RBENV_VERSION=$(ruby -ryaml -e 'puts YAML.load_file("config.yml")["rbenv"]["version"]')

@@ -73,24 +73,17 @@ jobs:
       - name: Check whether the Rbenv version in config.yml is correct
         run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-version.sh
         if: '!cancelled()'
-      - name: Check whether the Rbenv package revision needs to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-package-revision.sh
+
+      - name: Unit tests
+        run: ./test/run.rb
         if: '!cancelled()'
 
-      - name: Check whether the fullstaq-ruby-common Debian package version or revision needs to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-deb-version-revision.sh
+      - name: Check package versions and revisions
         if: '!cancelled()'
-      - name: Check whether the fullstaq-ruby-common RPM package version or revision needs to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-rpm-version-revision.sh
-        if: '!cancelled()'
-
-      - name: Check whether any Ruby package revisions need to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-ruby-package-revisions.sh
-        if: '!cancelled()'
-
-      - name: Check whether any minor Ruby package revisions need to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-minor-ruby-package-revisions.sh
-        if: '!cancelled()'
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          BEFORE_SHA: ${{ github.event.before }}
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-package-versions.rb
 
 
   bundle_install:

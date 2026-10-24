@@ -1,0 +1,15 @@
+# Existing minor-version packages and their accumulated revisions.
+ruby:
+  minor_version_packages:
+    - minor_version: '4.0'
+      full_version: '4.0.6'
+      package_revision: '4'
+    - minor_version: '3.4'
+      full_version: '3.4.10'
+      package_revision: '9'
+    - minor_version: '3.3'
+      full_version: '3.3.12'
+      package_revision: '12'
+    - minor_version: '3.2'
+      full_version: '3.2.11'
+      package_revision: '13'
